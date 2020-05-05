@@ -5,6 +5,9 @@ class NextPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("@@MediaQuery ${MediaQuery.of(context).size}");
+    print("@@MediaQuery ${MediaQuery.of(context).padding.top}");
+    print("@@MediaQuery ${MediaQuery.of(context).devicePixelRatio}");
     return Scaffold(
       appBar: AppBar(
         title: Text("next page"),

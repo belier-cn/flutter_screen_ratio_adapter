@@ -15,12 +15,12 @@ void runFxApp(Widget app, {@required Size uiSize}) {
 }
 
 class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
-  static final String TAG = "【_FxWidgetsFlutterBinding】";
+  static final String TAG = "【_Fx】";
   final Size _uiSize;
 
   _FxWidgetsFlutterBinding(this._uiSize);
 
-  static _FxWidgetsFlutterBinding ensureInitialized(Size uiSize) {
+  static WidgetsFlutterBinding ensureInitialized(Size uiSize) {
     assert(uiSize != null);
     if (WidgetsBinding.instance == null) _FxWidgetsFlutterBinding(uiSize);
     double ratio;
