@@ -19,6 +19,16 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: '设计尺寸${uiSize.toString()}'),
+      builder: (context, widget) {
+        final data = MediaQuery.of(context);
+        print("textScaleFactor: ${data.textScaleFactor}");
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaleFactor: 1,
+          ),
+          child: widget,
+        );
+      },
     );
   }
 }
@@ -42,6 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+//    ScreenUtil.init(context, width: 750, height: 1334, allowFontScaling: true);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -61,6 +72,15 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             Text(
               '设计尺寸 414x896',
+              style: TextStyle(fontSize: 20),
+            ),
+            Text(
+              '设计尺寸 414x896 fontSize: 19',
+              style: TextStyle(fontSize: 19),
+            ),
+            Text(
+              '设计尺寸 414x896 fontSize: 18',
+              style: TextStyle(fontSize: 18),
             ),
             Row(
               children: <Widget>[
@@ -72,7 +92,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text("w= 100,    h=100"),
                   ),
                 ),
-
                 SizedBox(
                   width: 314,
                   height: 100,

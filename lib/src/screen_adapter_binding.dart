@@ -1,21 +1,21 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
-import 'dart:ui' as ui show window;
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:collection';
 import 'dart:ui' as ui show window, PointerDataPacket;
+import 'print.dart';
 
 void runFxApp(Widget app, {@required Size uiSize}) {
   _FxWidgetsFlutterBinding.ensureInitialized(uiSize)
+    // ignore: invalid_use_of_protected_member
     ..scheduleAttachRootWidget(app)
     ..scheduleWarmUpFrame();
 }
 
 class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
-  static final String TAG = "【_Fx】";
+  static const TAG = "【_Fx】";
   final Size _uiSize;
 
   _FxWidgetsFlutterBinding(this._uiSize);
@@ -36,13 +36,23 @@ class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
     } else {
       print("$TAG 尺码完全符合");
     }
-    if (uiSize.width > 720) {
-      print("warn 请以pt初始化ui尺寸");
+    if (uiSize.width >= 720) {
+      print("╔═══════════════════════════════════╗");
+      print("║                ╭-╮                ║");
+      print("║                ┆ ┆                ║");
+      print("║                ┆ ┆                ║");
+      print("║                ╰-╯                ║");
+      print("║                 ○                 ║");
+      print("║                                   ║");
+      print("║      请以pt/dp为单位初始化ui尺寸     ║");
+      print("║                                   ║");
+      print("║                                   ║");
+      print("╚═══════════════════════════════════╝");
     }
 
     ratio = (ui.window.physicalSize.width / uiWidth);
     print("$TAG 原本屏幕尺寸比率=${ui.window.devicePixelRatio}");
-    print("$TAG 转换后的屏幕尺寸比率=${ratio}");
+    print("$TAG 转换后的屏幕尺寸比率=$ratio");
     return WidgetsBinding.instance;
   }
 

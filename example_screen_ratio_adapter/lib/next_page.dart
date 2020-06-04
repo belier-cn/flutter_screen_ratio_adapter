@@ -8,6 +8,7 @@ class NextPage extends StatelessWidget {
     print("@@MediaQuery ${MediaQuery.of(context).size}");
     print("@@MediaQuery ${MediaQuery.of(context).padding.top}");
     print("@@MediaQuery ${MediaQuery.of(context).devicePixelRatio}");
+    print("@@MediaQuery ${MediaQuery.of(context).textScaleFactor}");
     return Scaffold(
       appBar: AppBar(
         title: Text("next page"),
@@ -15,7 +16,18 @@ class NextPage extends StatelessWidget {
       body: Center(
         child: Column(
           children: <Widget>[
-
+            Text(
+              '设计尺寸 414x896',
+              style: TextStyle(fontSize: 20),
+            ),
+            Text(
+              '设计尺寸 414x896 fontSize: 19',
+              style: TextStyle(fontSize: 19),
+            ),
+            Text(
+              '设计尺寸 414x896 fontSize: 18',
+              style: TextStyle(fontSize: 18),
+            ),
             Text(
               '设计尺寸 300x510',
             ),
@@ -57,7 +69,9 @@ class NextPage extends StatelessWidget {
                 ),
               ],
             ),
-            Padding(padding: EdgeInsets.only(top: 100),),
+            Padding(
+              padding: EdgeInsets.only(top: 100),
+            ),
             Row(
               children: <Widget>[
                 Container(
