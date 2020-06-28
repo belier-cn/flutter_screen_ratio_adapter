@@ -7,8 +7,9 @@ import 'dart:collection';
 import 'dart:ui' as ui show window, PointerDataPacket;
 import 'print.dart';
 
-void runFxApp(Widget app, {@required Size uiSize}) {
-  _FxWidgetsFlutterBinding.ensureInitialized(uiSize)
+void runFxApp(Widget app,
+    {@required Size uiSize, VoidCallback onEnsureInitialized}) {
+  _FxWidgetsFlutterBinding.ensureInitialized(uiSize, onEnsureInitialized)
     // ignore: invalid_use_of_protected_member
     ..scheduleAttachRootWidget(app)
     ..scheduleWarmUpFrame();
@@ -17,12 +18,15 @@ void runFxApp(Widget app, {@required Size uiSize}) {
 class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
   static const TAG = "【_Fx】";
   final Size _uiSize;
+  final VoidCallback onEnsureInitialized;
 
-  _FxWidgetsFlutterBinding(this._uiSize);
+  _FxWidgetsFlutterBinding(this._uiSize, this.onEnsureInitialized);
 
-  static WidgetsFlutterBinding ensureInitialized(Size uiSize) {
+  static WidgetsFlutterBinding ensureInitialized(
+      Size uiSize, VoidCallback onEnsureInitialized) {
     assert(uiSize != null);
-    if (WidgetsBinding.instance == null) _FxWidgetsFlutterBinding(uiSize);
+    if (WidgetsBinding.instance == null)
+      _FxWidgetsFlutterBinding(uiSize, onEnsureInitialized);
     double ratio;
     double uiWidth = uiSize.width;
     print(
@@ -53,6 +57,7 @@ class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
     ratio = (ui.window.physicalSize.width / uiWidth);
     print("$TAG 原本屏幕尺寸比率=${ui.window.devicePixelRatio}");
     print("$TAG 转换后的屏幕尺寸比率=$ratio");
+    if (onEnsureInitialized != null) onEnsureInitialized();
     return WidgetsBinding.instance;
   }
 
