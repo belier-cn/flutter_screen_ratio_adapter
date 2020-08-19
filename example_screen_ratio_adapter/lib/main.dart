@@ -4,10 +4,13 @@ import 'next_page.dart';
 import 'package:screen_ratio_adapter/screen_ratio_adapter.dart';
 
 //Size uiSize = Size(300, 510);
-Size uiSize = Size(414, 896);
+Size uiSize = Size(721, 628);
 
 //void main() => runApp(MyApp());
-void main() => runFxApp(MyApp(), uiSize: uiSize);
+void main() {
+  return runFxApp(MyApp(), uiSize: uiSize, onEnsureInitialized: (info) {
+  });
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -19,16 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: '设计尺寸${uiSize.toString()}'),
-      builder: (context, widget) {
-        final data = MediaQuery.of(context);
-        print("textScaleFactor: ${data.textScaleFactor}");
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            textScaleFactor: 1,
-          ),
-          child: widget,
-        );
-      },
+      builder: FxTransitionBuilder(builder: null),
     );
   }
 }

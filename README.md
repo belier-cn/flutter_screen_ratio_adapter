@@ -30,6 +30,8 @@ A new Flutter package for screen atio adapter，Low invasion cost.Based wide ada
 
 ### 实践报告
 
+**下图警戒区为故意超出一个单位的示例图**
+
 | \设备                     | android                                                      | Android                                                      | iOS                                                          |
 | ------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | 设备分辨率                | 1080x1794                                                    | 720x2160                                                     | 1242x2688                                                    |
@@ -44,6 +46,12 @@ A new Flutter package for screen atio adapter，Low invasion cost.Based wide ada
 |                           | <img src="https://user-gold-cdn.xitu.io/2020/4/18/1718df4e1efb90dc?w=1080&amp;h=1920&amp;f=png&amp;s=148927" style="zoom:25%;" /> | <img src="https://user-gold-cdn.xitu.io/2020/4/18/1718df5c3119b784?w=720&amp;h=2160&amp;f=png&amp;s=90158" style="zoom:25%;" /> | <img src="https://user-gold-cdn.xitu.io/2020/4/18/1718df170d282fee?w=854&amp;h=1738&amp;f=png&amp;s=298566" style="zoom:25%;" /> |
 |                           |                                                              |                                                              |                                                              |
 
+
+
+[已上传**pub.dev** ️❤️❤️点赞😘😘](https://pub.dev/packages/screen_ratio_adapter)
+
+[已上传**github**    ️❤️❤️加星😘😘](https://github.com/qcks/flutter_screen_ratio_adapter)
+
 ### 使用方式
 
 ```yaml
@@ -52,10 +60,6 @@ A new Flutter package for screen atio adapter，Low invasion cost.Based wide ada
 如有BUG记小本
 携尔长刀来相砍
 ```
-
-[已上传**pub.dev** ️❤️❤️点赞😘😘](https://pub.dev/packages/screen_ratio_adapter)
-
-[已上传**github**    ️❤️❤️加星😘😘](https://github.com/qcks/flutter_screen_ratio_adapter)
 
 
 ```yaml

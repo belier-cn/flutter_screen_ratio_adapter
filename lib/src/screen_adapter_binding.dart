@@ -5,66 +5,93 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:collection';
 import 'dart:ui' as ui show window, PointerDataPacket;
+import 'info.dart';
 import 'print.dart';
+import 'transition_builder_widget.dart';
+
+const _TAG = "【_Fx】";
+
+typedef InfoCallback = void Function(Info duration);
 
 void runFxApp(Widget app,
-    {@required Size uiSize, VoidCallback onEnsureInitialized}) {
+    {@required Size uiSize, InfoCallback onEnsureInitialized}) {
   _FxWidgetsFlutterBinding.ensureInitialized(uiSize, onEnsureInitialized)
     // ignore: invalid_use_of_protected_member
     ..scheduleAttachRootWidget(app)
     ..scheduleWarmUpFrame();
 }
 
-class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
-  static const TAG = "【_Fx】";
-  final Size _uiSize;
-  final VoidCallback onEnsureInitialized;
+Info _info;
 
-  _FxWidgetsFlutterBinding(this._uiSize, this.onEnsureInitialized);
+Info get info {
+  assert(_info != null, "$_TAG no Ensure Initialized");
+  return _info;
+}
+
+///还原为设备原始实际值
+double restore2DeviceValue(double dpValue) {
+  return (dpValue / info.actualPixelRatio) * info.devicePixelRatio;
+}
+
+EdgeInsets restore2DeviceEdgeInsets(EdgeInsets dpEdgeInsets) {
+  return dpEdgeInsets * (info.devicePixelRatio / info.actualPixelRatio);
+}
+
+Size restore2DeviceSize(Size dpSize) {
+  return dpSize * (info.devicePixelRatio / info.actualPixelRatio);
+}
+
+// ignore: non_constant_identifier_names
+TransitionBuilder FxTransitionBuilder({TransitionBuilder builder}) {
+  return (context, child) {
+    assert(_info != null, "$_TAG no Ensure Initialized");
+    var old = MediaQuery.of(context);
+    print("原MediaQueryData$old");
+    if (builder == null) builder = (__, _) => _;
+    return TransitionBuilderWidget(
+      builder: builder,
+      child: MediaQuery(
+        data: MediaQuery.of(context).copyWith(
+          textScaleFactor: 1,
+          padding: restore2DeviceEdgeInsets(old.padding),
+          viewPadding: restore2DeviceEdgeInsets(old.viewPadding),
+          viewInsets: restore2DeviceEdgeInsets(old.viewInsets),
+          systemGestureInsets:
+              restore2DeviceEdgeInsets(old.systemGestureInsets),
+        ),
+        child: child,
+      ),
+    );
+  };
+}
+
+class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
+  final InfoCallback onEnsureInitialized;
+  final Size uiSize;
+
+  _FxWidgetsFlutterBinding(this.uiSize, this.onEnsureInitialized);
 
   static WidgetsFlutterBinding ensureInitialized(
-      Size uiSize, VoidCallback onEnsureInitialized) {
-    assert(uiSize != null);
+      Size uiSize, InfoCallback onEnsureInitialized) {
+    assert(uiSize != null && uiSize.width != null && uiSize.width > 0);
     if (WidgetsBinding.instance == null)
       _FxWidgetsFlutterBinding(uiSize, onEnsureInitialized);
-    double ratio;
-    double uiWidth = uiSize.width;
-    print(
-        "$TAG 设计稿标准尺寸 = ${uiSize.toString()} h/w tanθ= ${1 / uiSize.aspectRatio}");
-    print(
-        "$TAG 设备的屏幕尺寸 =${ui.window.physicalSize}  h/w tanθ=${1 / ui.window.physicalSize.aspectRatio}");
-    if (ui.window.physicalSize.aspectRatio > uiSize.aspectRatio) {
-      print("$TAG 尺码过大 请启用纵向滑动式适配");
-    } else if (ui.window.physicalSize.aspectRatio < uiSize.aspectRatio) {
-      print("$TAG 尺码过小 设置需要留白的区域");
-    } else {
-      print("$TAG 尺码完全符合");
-    }
-    if (uiSize.width >= 720) {
-      print("╔═══════════════════════════════════╗");
-      print("║                ╭-╮                ║");
-      print("║                ┆ ┆                ║");
-      print("║                ┆ ┆                ║");
-      print("║                ╰-╯                ║");
-      print("║                 ○                 ║");
-      print("║                                   ║");
-      print("║      请以pt/dp为单位初始化ui尺寸     ║");
-      print("║                                   ║");
-      print("║                                   ║");
-      print("╚═══════════════════════════════════╝");
-    }
-
-    ratio = (ui.window.physicalSize.width / uiWidth);
-    print("$TAG 原本屏幕尺寸比率=${ui.window.devicePixelRatio}");
-    print("$TAG 转换后的屏幕尺寸比率=$ratio");
-    if (onEnsureInitialized != null) onEnsureInitialized();
+    double devicePixelRatio = ui.window.devicePixelRatio;
+    double actualPixelRatio = ui.window.physicalSize.width / uiSize.width;
+    _info = Info(
+        devicePixelRatio: devicePixelRatio,
+        actualPixelRatio: actualPixelRatio,
+        uiSize: uiSize,
+        devicePhysicalSize: ui.window.physicalSize);
+    print("$_TAG $_info");
+    if (onEnsureInitialized != null) onEnsureInitialized(_info);
     return WidgetsBinding.instance;
   }
 
   @protected
   void scheduleAttachRootWidget(Widget rootWidget) {
     Timer.run(() {
-      attachRootWidget(RoorRenderObjectWidget(rootWidget));
+      attachRootWidget(_RoorRenderObjectWidget(rootWidget));
     });
   }
 
@@ -137,21 +164,21 @@ class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
   }
 
   double _getAdapterDevicePixelRatio() {
-    return ui.window.physicalSize.width / _uiSize.width;
+    return ui.window.physicalSize.width / uiSize.width;
   }
 }
 
-class RoorRenderObjectWidget extends SingleChildRenderObjectWidget {
-  RoorRenderObjectWidget(rootChild) : super(child: rootChild);
+class _RoorRenderObjectWidget extends SingleChildRenderObjectWidget {
+  _RoorRenderObjectWidget(rootChild) : super(child: rootChild);
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderInner();
+    return _RenderInner();
   }
 }
 
-class RenderInner extends RenderPadding {
-  RenderInner() : super(padding: EdgeInsets.all(0));
+class _RenderInner extends RenderPadding {
+  _RenderInner() : super(padding: EdgeInsets.all(0));
 
   @override
   // TODO: implement size

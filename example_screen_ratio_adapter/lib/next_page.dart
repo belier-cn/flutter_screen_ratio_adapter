@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:screen_ratio_adapter/screen_ratio_adapter.dart';
 
 class NextPage extends StatelessWidget {
   NextPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    print("@@MediaQuery ${MediaQuery.of(context).size}");
-    print("@@MediaQuery ${MediaQuery.of(context).padding.top}");
-    print("@@MediaQuery ${MediaQuery.of(context).devicePixelRatio}");
-    print("@@MediaQuery ${MediaQuery.of(context).textScaleFactor}");
+    print("@@NextPageMediaQuery ${MediaQuery.of(context)}");
     return Scaffold(
       appBar: AppBar(
         title: Text("next page"),
       ),
-      body: Center(
+      backgroundColor: Colors.green,
+      body: Container(
+//        margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+        height: info.uiSize.height,
+        color: Colors.red,
         child: Column(
           children: <Widget>[
+            SizedBox(
+              height: MediaQuery.of(context).padding.top,
+            ),
             Text(
               '设计尺寸 414x896',
               style: TextStyle(fontSize: 20),
