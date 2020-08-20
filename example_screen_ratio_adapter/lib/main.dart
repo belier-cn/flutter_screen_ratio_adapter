@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-
-import 'next_page.dart';
 import 'package:screen_ratio_adapter/screen_ratio_adapter.dart';
 
+///设计稿尺寸，单位应是pt或dp
 //Size uiSize = Size(300, 510);
 //Size uiSize = Size(721, 628);
-Size uiSize = Size(414, 896)*1;
+Size uiSize = Size(414, 896) * 1;
 
 //void main() => runApp(MyApp());
 void main() {
   return runFxApp(MyApp(), uiSize: uiSize, onEnsureInitialized: (info) {
+    /// info.deltaHeight 尺码差值dp
   });
 }
 
@@ -183,6 +183,121 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class NextPage extends StatelessWidget {
+  NextPage({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    print("@@NextPageMediaQuery ${MediaQuery.of(context)}");
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("next page"),
+      ),
+      backgroundColor: Colors.green,
+      body: Container(
+//        margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+        height: info.actualDpSize.height,
+        color: Colors.red,
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: info.deltaHeight.abs(),
+              width: double.infinity,
+              color: Colors.deepPurpleAccent,
+              child: Text("deltaHeight=${info.deltaHeight}"),
+            ),
+            Text("info.actualDpSize.height=${info.actualDpSize}"),
+            Text(
+              '设计尺寸 414x896',
+              style: TextStyle(fontSize: 20),
+            ),
+            Text(
+              '设计尺寸 414x896 fontSize: 19',
+              style: TextStyle(fontSize: 19),
+            ),
+            Text(
+              '设计尺寸 414x896 fontSize: 18',
+              style: TextStyle(fontSize: 18),
+            ),
+            Text(
+              '设计尺寸 300x510',
+            ),
+            Row(
+              children: <Widget>[
+                Container(
+                  child: Text("W= 100"),
+                  width: 100,
+                  height: 30,
+                  color: Colors.lightBlue,
+                ),
+                Container(
+                  child: Text("W= 200"),
+                  width: 200,
+                  height: 30,
+                  color: Colors.red,
+                ),
+              ],
+            ),
+            Row(
+              children: <Widget>[
+                Container(
+                  child: Text("W= 100"),
+                  width: 100,
+                  height: 30,
+                  color: Colors.yellow,
+                ),
+                Container(
+                  child: Text("W= 100"),
+                  width: 100,
+                  height: 30,
+                  color: Colors.lightBlue,
+                ),
+                Container(
+                  child: Text("W= 100"),
+                  width: 100,
+                  height: 30,
+                  color: Colors.yellow,
+                ),
+              ],
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 100),
+            ),
+            Row(
+              children: <Widget>[
+                Container(
+                  child: Text("W= 301"),
+                  width: 300,
+                  height: 30,
+                  color: Colors.cyanAccent,
+                ),
+                Container(
+                  child: Text(""),
+                  width: 1,
+                  height: 30,
+                  color: Colors.red,
+                ),
+              ],
+            ),
+            RaisedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return NextPage();
+                }));
+              },
+              child: Text("NextPage"),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.

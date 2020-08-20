@@ -75,6 +75,7 @@ Size uiSize = Size(414, 896);
 //void main() => runApp(MyApp());
 void main() {
   return runFxApp(MyApp(), uiSize: uiSize, onEnsureInitialized: (info) {
+    /// info.deltaHeight 尺码差值dp
   });
 }
 
