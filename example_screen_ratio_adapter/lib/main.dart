@@ -4,7 +4,8 @@ import 'next_page.dart';
 import 'package:screen_ratio_adapter/screen_ratio_adapter.dart';
 
 //Size uiSize = Size(300, 510);
-Size uiSize = Size(721, 628);
+//Size uiSize = Size(721, 628);
+Size uiSize = Size(414, 896)*1;
 
 //void main() => runApp(MyApp());
 void main() {

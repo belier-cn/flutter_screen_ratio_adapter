@@ -14,13 +14,17 @@ class NextPage extends StatelessWidget {
       backgroundColor: Colors.green,
       body: Container(
 //        margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-        height: info.uiSize.height,
+        height: info.actualDpSize.height,
         color: Colors.red,
         child: Column(
           children: <Widget>[
-            SizedBox(
-              height: MediaQuery.of(context).padding.top,
+            Container(
+              height: info.deltaHeight.abs(),
+              width: double.infinity,
+              color: Colors.deepPurpleAccent,
+              child: Text("deltaHeight=${info.deltaHeight}"),
             ),
+            Text("info.actualDpSize.height=${info.actualDpSize}"),
             Text(
               '设计尺寸 414x896',
               style: TextStyle(fontSize: 20),

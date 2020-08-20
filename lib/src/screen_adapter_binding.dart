@@ -30,15 +30,15 @@ Info get info {
 
 ///还原为设备原始实际值
 double restore2DeviceValue(double dpValue) {
-  return (dpValue / info.actualPixelRatio) * info.devicePixelRatio;
+  return dpValue * info.restoreRatio;
 }
 
 EdgeInsets restore2DeviceEdgeInsets(EdgeInsets dpEdgeInsets) {
-  return dpEdgeInsets * (info.devicePixelRatio / info.actualPixelRatio);
+  return dpEdgeInsets * info.restoreRatio;
 }
 
 Size restore2DeviceSize(Size dpSize) {
-  return dpSize * (info.devicePixelRatio / info.actualPixelRatio);
+  return dpSize * info.restoreRatio;
 }
 
 // ignore: non_constant_identifier_names
@@ -46,22 +46,24 @@ TransitionBuilder FxTransitionBuilder({TransitionBuilder builder}) {
   return (context, child) {
     assert(_info != null, "$_TAG no Ensure Initialized");
     var old = MediaQuery.of(context);
-    print("原MediaQueryData$old");
+    print("原MediaQueryData=$old");
     if (builder == null) builder = (__, _) => _;
     return TransitionBuilderWidget(
-      builder: builder,
-      child: MediaQuery(
-        data: MediaQuery.of(context).copyWith(
-          textScaleFactor: 1,
-          padding: restore2DeviceEdgeInsets(old.padding),
-          viewPadding: restore2DeviceEdgeInsets(old.viewPadding),
-          viewInsets: restore2DeviceEdgeInsets(old.viewInsets),
-          systemGestureInsets:
-              restore2DeviceEdgeInsets(old.systemGestureInsets),
-        ),
-        child: child,
-      ),
-    );
+        builder: builder,
+        didChangeMetricsCallBack: () {
+          _info.devicePhysicalSize = ui.window.physicalSize;
+        },
+        child: MediaQuery(
+          data: old.copyWith(
+            textScaleFactor: 1,
+            padding: restore2DeviceEdgeInsets(old.padding),
+            viewPadding: restore2DeviceEdgeInsets(old.viewPadding),
+            viewInsets: restore2DeviceEdgeInsets(old.viewInsets),
+            systemGestureInsets:
+                restore2DeviceEdgeInsets(old.systemGestureInsets),
+          ),
+          child: child,
+        ));
   };
 }
 
