@@ -64,15 +64,33 @@ A new Flutter package for screen atio adapter，Low invasion cost.Based wide ada
 
 ```yaml
 dependencies:
-  screen_ratio_adapter: ^0.0.2
+  screen_ratio_adapter: ^latest version
 ```
 
 ```dart
 import 'package:screen_ratio_adapter/screen_ratio_adapter.dart';
 ///设计稿尺寸，单位应是pt或dp
 Size uiSize = Size(414, 896);
+
 //void main() => runApp(MyApp());
-void main() => runFxApp(MyApp(), uiSize: uiSize);
+void main() {
+  return runFxApp(MyApp(), uiSize: uiSize, onEnsureInitialized: (info) {
+  });
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(),
+      builder: FxTransitionBuilder(builder: null),
+    );
+  }
+}
 
 ```
 
