@@ -8,9 +8,7 @@ Size uiSize = Size(414, 896) * 1;
 
 //void main() => runApp(MyApp());
 void main() {
-  return runFxApp(MyApp(), uiSize: uiSize, onEnsureInitialized: (info) {
-    /// info.deltaHeight 尺码差值dp
-  });
+  return runFxApp(MyApp(), uiSize: uiSize, onEnsureInitialized: (info) {});
 }
 
 class MyApp extends StatelessWidget {
@@ -62,123 +60,127 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            Text(
-              '设计尺寸 414x896',
-              style: TextStyle(fontSize: 20),
-            ),
-            Text(
-              '设计尺寸 414x896 fontSize: 19',
-              style: TextStyle(fontSize: 19),
-            ),
-            Text(
-              '设计尺寸 414x896 fontSize: 18',
-              style: TextStyle(fontSize: 18),
-            ),
-            Row(
-              children: <Widget>[
-                SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: Container(
-                    color: Colors.orange,
-                    child: Text("w= 100,    h=100"),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                '设计尺寸 414x896',
+                style: TextStyle(fontSize: 20),
+              ),
+              Text(
+                '设计尺寸 414x896 fontSize: 19',
+                style: TextStyle(fontSize: 19),
+              ),
+              Text(
+                '设计尺寸 414x896 fontSize: 18',
+                style: TextStyle(fontSize: 18),
+              ),
+              Row(
+                children: <Widget>[
+                  SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: Container(
+                      color: Colors.orange,
+                      child: Text("w= 100,    h=100"),
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: 314,
-                  height: 100,
-                  child: Container(
-                    color: Colors.green,
-                    child: Text("w=314"),
+                  SizedBox(
+                    width: 314,
+                    height: 100,
+                    child: Container(
+                      color: Colors.green,
+                      child: Text("w=314"),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Container(
-                  child: Text("W= 414"),
-                  width: 414,
-                  height: 80,
-                  color: Colors.greenAccent,
-                ),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Container(
-                  child: Text("W= 415"),
-                  width: 500,
-                  height: 80,
-                  color: Colors.lightBlue,
-                ),
-              ],
-            ),
-            Text(
-              '设计尺寸 300x510',
-            ),
-            Row(
-              children: <Widget>[
-                Container(
-                  child: Text("W= 100"),
-                  width: 100,
-                  height: 30,
-                  color: Colors.lightBlue,
-                ),
-                Container(
-                  child: Text("W= 200"),
-                  width: 200,
-                  height: 30,
-                  color: Colors.red,
-                ),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Container(
-                  child: Text("W= 100"),
-                  width: 100,
-                  height: 30,
-                  color: Colors.yellow,
-                ),
-                Container(
-                  child: Text("W= 100"),
-                  width: 100,
-                  height: 30,
-                  color: Colors.lightBlue,
-                ),
-                Container(
-                  child: Text("W= 100"),
-                  width: 100,
-                  height: 30,
-                  color: Colors.yellow,
-                ),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Container(
-                  child: Text("W= 301"),
-                  width: 300,
-                  height: 30,
-                  color: Colors.cyanAccent,
-                ),
-                Container(
-                  child: Text(""),
-                  width: 1,
-                  height: 30,
-                  color: Colors.red,
-                ),
-              ],
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Container(
+                    child: Text("W= 414"),
+                    width: 414,
+                    height: 80,
+                    color: Colors.greenAccent,
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Container(
+                    child: Text("W= 415"),
+                    width: 415,
+                    height: 80,
+                    color: Colors.lightBlue,
+                  ),
+                ],
+              ),
+              Text(
+                '设计尺寸 300x510',
+              ),
+              Row(
+                children: <Widget>[
+                  Container(
+                    child: Text("W= 100"),
+                    width: 100,
+                    height: 30,
+                    color: Colors.lightBlue,
+                  ),
+                  Container(
+                    child: Text("W= 200"),
+                    width: 200,
+                    height: 30,
+                    color: Colors.red,
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Container(
+                    child: Text("W= 100"),
+                    width: 100,
+                    height: 30,
+                    color: Colors.yellow,
+                  ),
+                  Container(
+                    child: Text("W= 100"),
+                    width: 100,
+                    height: 30,
+                    color: Colors.lightBlue,
+                  ),
+                  Container(
+                    child: Text("W= 100"),
+                    width: 100,
+                    height: 30,
+                    color: Colors.yellow,
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Container(
+                    child: Text("W= 301"),
+                    width: 300,
+                    height: 30,
+                    color: Colors.cyanAccent,
+                  ),
+                  Container(
+                    child: Text(""),
+                    width: 1,
+                    height: 30,
+                    color: Colors.red,
+                  ),
+                ],
+              ),
+              Text(
+                '$_counter',
+                style: Theme.of(context).textTheme.display1,
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -289,7 +291,7 @@ class NextPage extends StatelessWidget {
             RaisedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return NextPage();
+                  return NextPage2();
                 }));
               },
               child: Text("NextPage"),
@@ -301,6 +303,36 @@ class NextPage extends StatelessWidget {
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class NextPage2 extends StatelessWidget {
+  NextPage2({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    print("build哈哈哈");
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("哈哈哈"),
+      ),
+      body: Column(
+        children: [
+//          Container(
+//              color: Colors.lightBlue,
+//              width: double.infinity,
+//              height: MediaQuery.of(context).padding.top,
+//              child: Text("stateBar")),
+
+          Container(
+              color: Colors.yellow,
+              width: double.infinity,
+              height: info.bodyMaxHasAppBar,
+              child: Text("body")),
+        ],
+      ),
     );
   }
 }

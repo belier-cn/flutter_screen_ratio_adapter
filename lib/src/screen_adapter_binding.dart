@@ -51,12 +51,14 @@ TransitionBuilder FxTransitionBuilder({TransitionBuilder builder}) {
     return TransitionBuilderWidget(
         builder: builder,
         didChangeMetricsCallBack: () {
-          _info.devicePhysicalSize = ui.window.physicalSize;
+          print("$_TAG 尺寸变化didChangeMetricsCallBack");
+          _info.onScreenMetricsChange(old);
         },
         child: MediaQuery(
           data: old.copyWith(
             textScaleFactor: 1,
             padding: restore2DeviceEdgeInsets(old.padding),
+            //显示的部分被系统UI遮挡的部分
             viewPadding: restore2DeviceEdgeInsets(old.viewPadding),
             viewInsets: restore2DeviceEdgeInsets(old.viewInsets),
             systemGestureInsets:
@@ -83,8 +85,7 @@ class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
     _info = Info(
         devicePixelRatio: devicePixelRatio,
         actualPixelRatio: actualPixelRatio,
-        uiSize: uiSize,
-        devicePhysicalSize: ui.window.physicalSize);
+        uiSize: uiSize);
     print("$_TAG $_info");
     if (onEnsureInitialized != null) onEnsureInitialized(_info);
     return WidgetsBinding.instance;

@@ -15,6 +15,7 @@ class TransitionBuilderWidget extends StatefulWidget {
 
   @override
   _TransitionBuilderWidgetState createState() {
+    if (didChangeMetricsCallBack != null) didChangeMetricsCallBack();
     return _TransitionBuilderWidgetState();
   }
 }
