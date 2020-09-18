@@ -3,5 +3,6 @@
 ## [0.0.3] - TODO: fix bug.
 ## [0.1.0] - TODO: -bug(fix:Bug).
 ## [0.9.0] - TODO: 竖屏状态无干扰.
+## [1.0.0] - TODO: To perform well.
 
 * TODO: Describe initial release.

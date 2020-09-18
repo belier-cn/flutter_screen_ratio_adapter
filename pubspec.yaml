@@ -1,6 +1,6 @@
 name: screen_ratio_adapter
 description: A new Flutter package for screen atio adapter，Low invasion cost.Based wide adaptation,height Scroll or leave blank.It's not a utility class.
-version: 0.9.0
+version: 1.0.0
 homepage: https://github.com/qcks/flutter_screen_ratio_adapter
 
 environment:
