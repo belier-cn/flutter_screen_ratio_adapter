@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:screen_ratio_adapter/screen_ratio_adapter.dart';
 
 ///设计稿尺寸，单位应是pt或dp
-//Size uiSize = Size(300, 510);
-//Size uiSize = Size(721, 628);
-Size uiSize = Size(414, 896) * 1;
+//var uiSize = BlueprintsRectangle(300, 510);
+//var uiSize = BlueprintsRectangle(721, 628);
+var uiSize = BlueprintsRectangle(414, 878);
 
 //void main() => runApp(MyApp());
 void main() {
-  return runFxApp(MyApp(), uiSize: uiSize, onEnsureInitialized: (info) {});
+  return runFxApp(MyApp(),
+      uiBlueprints: uiSize, onEnsureInitialized: (info) {}, enableLog: true);
 }
 
 class MyApp extends StatelessWidget {
@@ -67,7 +68,7 @@ class _MyHomePageState extends State<MyHomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(
-                '设计尺寸 414x896',
+                '设计尺寸 414x896 ${info.deltaLength}',
                 style: TextStyle(fontSize: 20),
               ),
               Text(
@@ -210,10 +211,10 @@ class NextPage extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Container(
-              height: info.deltaHeight.abs(),
+              height: info.deltaLength.abs(),
               width: double.infinity,
               color: Colors.deepPurpleAccent,
-              child: Text("deltaHeight=${info.deltaHeight}"),
+              child: Text("deltaHeight=${info.deltaLength}"),
             ),
             Text("info.actualDpSize.height=${info.actualDpSize}"),
             Text(
@@ -296,6 +297,22 @@ class NextPage extends StatelessWidget {
               },
               child: Text("NextPage"),
             ),
+            RaisedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return NextPage3();
+                }));
+              },
+              child: Text("NextPage3"),
+            ),
+            RaisedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return NextPage4();
+                }));
+              },
+              child: Text("NextPage4"),
+            ),
           ],
         ),
       ),
@@ -315,22 +332,73 @@ class NextPage2 extends StatelessWidget {
     // TODO: implement build
     print("build哈哈哈");
     return Scaffold(
-      appBar: AppBar(
-        title: Text("哈哈哈"),
-      ),
+//      appBar: AppBar(
+//        title: Text("哈哈哈"),
+//      ),
       body: Column(
         children: [
 //          Container(
-//              color: Colors.lightBlue,
+//              color: Colors.green,
 //              width: double.infinity,
-//              height: MediaQuery.of(context).padding.top,
-//              child: Text("stateBar")),
-
+//              height: MediaQuery.of(context).padding.top,),
           Container(
-              color: Colors.yellow,
               width: double.infinity,
-              height: info.bodyMaxHasAppBar,
-              child: Text("body")),
+              height: MediaQuery.of(context).padding.top,
+              color: Colors.red),
+          Container(
+              color: Colors.deepPurpleAccent,
+              width: double.infinity,
+//              height: info.bodyMaxLength-kToolbarHeight,
+              height: info.bodyMaxLength,
+              child: Text("body${info.bodyMaxLength}")),
+        ],
+      ),
+    );
+  }
+}
+
+class NextPage3 extends StatelessWidget {
+  NextPage3({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+      body: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            height: info.uiBlueprints.length,
+            color: Colors.red,
+            child: Text("PinTenonWidget测试"),
+          ),
+          PinTenonWidget(),
+        ],
+      ),
+    );
+  }
+}
+
+class NextPage4 extends StatelessWidget {
+  NextPage4({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("PinTenonWidget测试"),
+      ),
+      body: Column(
+        children: [
+          Container(
+            width: double.infinity,
+//            margin: EdgeInsets.only(top: MediaQuery.of(context).padding.vertical),
+            height: info.bodyMaxLength - kToolbarHeight,
+            color: Colors.red,
+            child: Text(
+                "PinTenonWidget测试 ${MediaQuery.of(context).padding.vertical}"),
+          ),
         ],
       ),
     );

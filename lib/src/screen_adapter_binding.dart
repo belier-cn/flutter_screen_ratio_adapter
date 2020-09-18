@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
+import 'package:screen_ratio_adapter/src/ui_blueprints_rectangle.dart';
 import 'dart:collection';
 import 'dart:ui' as ui show window, PointerDataPacket;
 import 'info.dart';
@@ -11,11 +13,12 @@ import 'transition_builder_widget.dart';
 
 const _TAG = "【_Fx】";
 
-typedef InfoCallback = void Function(Info duration);
-
 void runFxApp(Widget app,
-    {@required Size uiSize, InfoCallback onEnsureInitialized}) {
-  _FxWidgetsFlutterBinding.ensureInitialized(uiSize, onEnsureInitialized)
+    {@required BlueprintsRectangle uiBlueprints,
+    ValueChanged<Info> onEnsureInitialized,
+    bool enableLog = false}) {
+  _FxWidgetsFlutterBinding.ensureInitialized(
+      uiBlueprints, onEnsureInitialized, enableLog)
     // ignore: invalid_use_of_protected_member
     ..scheduleAttachRootWidget(app)
     ..scheduleWarmUpFrame();
@@ -28,7 +31,7 @@ Info get info {
   return _info;
 }
 
-///还原为设备原始实际值
+///还原为设备原始实际值,使用系统像素密度
 double restore2DeviceValue(double dpValue) {
   return dpValue * info.restoreRatio;
 }
@@ -41,24 +44,23 @@ Size restore2DeviceSize(Size dpSize) {
   return dpSize * info.restoreRatio;
 }
 
+double _adapterDevicePixelRatio;
 // ignore: non_constant_identifier_names
 TransitionBuilder FxTransitionBuilder({TransitionBuilder builder}) {
   return (context, child) {
-    assert(_info != null, "$_TAG no Ensure Initialized");
+    assert(_info != null, "$_TAG no Ensure Initialized,you need runFxApp");
     var old = MediaQuery.of(context);
-    print("原MediaQueryData=$old");
     if (builder == null) builder = (__, _) => _;
     return TransitionBuilderWidget(
         builder: builder,
         didChangeMetricsCallBack: () {
-          print("$_TAG 尺寸变化didChangeMetricsCallBack");
+          _adapterDevicePixelRatio = null;
           _info.onScreenMetricsChange(old);
         },
         child: MediaQuery(
           data: old.copyWith(
             textScaleFactor: 1,
             padding: restore2DeviceEdgeInsets(old.padding),
-            //显示的部分被系统UI遮挡的部分
             viewPadding: restore2DeviceEdgeInsets(old.viewPadding),
             viewInsets: restore2DeviceEdgeInsets(old.viewInsets),
             systemGestureInsets:
@@ -70,22 +72,25 @@ TransitionBuilder FxTransitionBuilder({TransitionBuilder builder}) {
 }
 
 class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
-  final InfoCallback onEnsureInitialized;
-  final Size uiSize;
+  final ValueChanged<Info> onEnsureInitialized;
+  final BlueprintsRectangle uiBlueprints;
 
-  _FxWidgetsFlutterBinding(this.uiSize, this.onEnsureInitialized);
+  _FxWidgetsFlutterBinding(this.uiBlueprints, this.onEnsureInitialized);
 
   static WidgetsFlutterBinding ensureInitialized(
-      Size uiSize, InfoCallback onEnsureInitialized) {
-    assert(uiSize != null && uiSize.width != null && uiSize.width > 0);
+      BlueprintsRectangle uiBlueprints,
+      ValueChanged<Info> onEnsureInitialized,
+      bool enableLog) {
+    assert(uiBlueprints != null &&
+        uiBlueprints.width != null &&
+        uiBlueprints.width > 0);
     if (WidgetsBinding.instance == null)
-      _FxWidgetsFlutterBinding(uiSize, onEnsureInitialized);
-    double devicePixelRatio = ui.window.devicePixelRatio;
-    double actualPixelRatio = ui.window.physicalSize.width / uiSize.width;
+      _FxWidgetsFlutterBinding(uiBlueprints, onEnsureInitialized);
+    double actualPixelRatio = ui.window.physicalSize.width / uiBlueprints.width;
     _info = Info(
-        devicePixelRatio: devicePixelRatio,
         actualPixelRatio: actualPixelRatio,
-        uiSize: uiSize);
+        uiBlueprints: uiBlueprints,
+        enableLog: enableLog);
     print("$_TAG $_info");
     if (onEnsureInitialized != null) onEnsureInitialized(_info);
     return WidgetsBinding.instance;
@@ -103,8 +108,8 @@ class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
   ViewConfiguration createViewConfiguration() {
     //super.createViewConfiguration();
     return ViewConfiguration(
-      size: window.physicalSize / _getAdapterDevicePixelRatio(),
-      devicePixelRatio: _getAdapterDevicePixelRatio(),
+      size: window.physicalSize / adapterDevicePixelRatio,
+      devicePixelRatio: adapterDevicePixelRatio,
     );
   }
 
@@ -124,8 +129,8 @@ class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
   final Queue<PointerEvent> _pendingPointerEvents = Queue<PointerEvent>();
 
   void _handlePointerDataPacket(ui.PointerDataPacket packet) {
-    _pendingPointerEvents.addAll(PointerEventConverter.expand(
-        packet.data, _getAdapterDevicePixelRatio()));
+    _pendingPointerEvents.addAll(
+        PointerEventConverter.expand(packet.data, adapterDevicePixelRatio));
     if (!locked) _flushPointerEventQueue();
   }
 
@@ -166,29 +171,46 @@ class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
     if (result != null) dispatchEvent(event, result);
   }
 
-  double _getAdapterDevicePixelRatio() {
-    return ui.window.physicalSize.width / uiSize.width;
+  double get adapterDevicePixelRatio {
+    if (_adapterDevicePixelRatio == null) {
+      var deviceShortWidth =
+          ui.window.physicalSize.width <= ui.window.physicalSize.height
+              ? ui.window.physicalSize.width
+              : ui.window.physicalSize.height;
+      _adapterDevicePixelRatio = deviceShortWidth / uiBlueprints.width;
+    }
+    return _adapterDevicePixelRatio;
   }
 }
 
 class _RoorRenderObjectWidget extends SingleChildRenderObjectWidget {
-  _RoorRenderObjectWidget(rootChild) : super(child: rootChild);
+  _RoorRenderObjectWidget(Widget rootChild) : super(child: rootChild);
 
   @override
   RenderObject createRenderObject(BuildContext context) {
+    assert(
+        _check(super.child, context),
+        "\nError:'FxTransitionBuilder' is not configured"
+        "\nMaterialApp("
+        "\n  ......"
+        "\n  builder: FxTransitionBuilder(builder: null),"
+        "\n  ......"
+        "\n);");
     return _RenderInner();
+  }
+
+  bool _check(Widget child, BuildContext context) {
+    if (child is StatelessWidget) {
+      var builder = (child.build(context) as MaterialApp).builder;
+      return builder != null;
+    } else if (child is StatefulBuilder) {
+      var builder = (child.createState().build(context) as MaterialApp).builder;
+      return builder != null;
+    }
+    return true;
   }
 }
 
 class _RenderInner extends RenderPadding {
   _RenderInner() : super(padding: EdgeInsets.all(0));
-
-  @override
-  // TODO: implement size
-  Size get size => printSize();
-
-  printSize() {
-    print("printSize    " + (super.size).toString());
-    return super.size;
-  }
 }
