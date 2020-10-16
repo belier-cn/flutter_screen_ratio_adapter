@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
@@ -30,6 +31,8 @@ Info get info {
   assert(_info != null, "$_TAG no Ensure Initialized");
   return _info;
 }
+
+bool _enableLog = false;
 
 ///还原为设备原始实际值,使用系统像素密度
 double restore2DeviceValue(double dpValue) {
@@ -84,6 +87,7 @@ class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
     assert(uiBlueprints != null &&
         uiBlueprints.width != null &&
         uiBlueprints.width > 0);
+    _enableLog = enableLog;
     if (WidgetsBinding.instance == null)
       _FxWidgetsFlutterBinding(uiBlueprints, onEnsureInitialized);
     double actualPixelRatio = ui.window.physicalSize.width / uiBlueprints.width;
@@ -189,7 +193,7 @@ class _RoorRenderObjectWidget extends SingleChildRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) {
     assert(
-        _check(super.child, context),
+        _checkApp(super.child, context),
         "\nError:'FxTransitionBuilder' is not configured"
         "\nMaterialApp("
         "\n  ......"
@@ -199,15 +203,44 @@ class _RoorRenderObjectWidget extends SingleChildRenderObjectWidget {
     return _RenderInner();
   }
 
-  bool _check(Widget child, BuildContext context) {
-    if (child is StatelessWidget) {
-      var builder = (child.build(context) as MaterialApp).builder;
-      return builder != null;
-    } else if (child is StatefulBuilder) {
-      var builder = (child.createState().build(context) as MaterialApp).builder;
-      return builder != null;
+  bool _checkApp(Widget child, BuildContext context) {
+    // if(_enableLog) return true;
+    MaterialApp app = _findMaterialOrCupertino<MaterialApp>(child, context);
+    if (app != null) return app.builder != null;
+
+    CupertinoApp cApp = _findMaterialOrCupertino<CupertinoApp>(child, context);
+    if (cApp != null) return cApp.builder != null;
+    assert(true, "MaterialApp or CupertinoApp not find🙃");
+    return false;
+  }
+
+  Widget _findMaterialOrCupertino<T>(Widget widget, BuildContext context) {
+    if (widget is StatelessWidget) {
+      // ignore: invalid_use_of_protected_member
+      Widget child = widget.build(context);
+      if (child is T) {
+        return child;
+      } else {
+        return _findMaterialOrCupertino<T>(child, context);
+      }
+    } else if (widget is StatefulBuilder) {
+      // ignore: invalid_use_of_protected_member
+      Widget child = widget.createState().build(context);
+      if (child is T) {
+        return child;
+      } else {
+        return _findMaterialOrCupertino<T>(child, context);
+      }
+    } else if (widget is SingleChildRenderObjectWidget) {
+      Widget child = widget.child;
+      if (child is T) {
+        return child;
+      } else {
+        return _findMaterialOrCupertino<T>(child, context);
+      }
+    } else {
+      return null;
     }
-    return true;
   }
 }
 
