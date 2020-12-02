@@ -8,6 +8,12 @@ import 'ui_blueprints_rectangle.dart';
 const _TAG = "【_Fx】";
 
 class Info {
+  static Info _instance;
+
+  static Info get instance {
+    return _instance;
+  }
+
   ///适配之后，每个逻辑像素对应的设备像素数
   final double actualPixelRatio;
 
@@ -23,10 +29,23 @@ class Info {
 
   double _bodyMaxLength;
 
-  Info(
+  Info._(
       {@required this.actualPixelRatio,
       @required this.uiBlueprints,
       this.enableLog = true});
+
+  factory Info.init(
+      {@required double actualPixelRatio,
+      @required BlueprintsRectangle uiBlueprints,
+      bool enableLog = true}) {
+    if (_instance == null) {
+      _instance = Info._(
+          actualPixelRatio: actualPixelRatio,
+          uiBlueprints: uiBlueprints,
+          enableLog: enableLog);
+    }
+    return _instance;
+  }
 
   ///密度无关像素，每个逻辑像素对应的设备像素数。就像 dp 或者 pt
   double get devicePixelRatio => window.devicePixelRatio;

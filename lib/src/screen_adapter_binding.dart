@@ -18,21 +18,25 @@ void runFxApp(Widget app,
     {@required BlueprintsRectangle uiBlueprints,
     ValueChanged<Info> onEnsureInitialized,
     bool enableLog = false}) {
-  _FxWidgetsFlutterBinding.ensureInitialized(
-      uiBlueprints, onEnsureInitialized, enableLog)
+  assert(uiBlueprints != null &&
+      uiBlueprints.width != null &&
+      uiBlueprints.width > 0);
+  _enableLog = enableLog ?? false;
+  _uiBlueprints = uiBlueprints;
+  _FxWidgetsFlutterBinding.ensureInitialized(onEnsureInitialized, enableLog)
     // ignore: invalid_use_of_protected_member
     ..scheduleAttachRootWidget(app)
     ..scheduleWarmUpFrame();
 }
 
-Info _info;
+// Info _info;
+BlueprintsRectangle _uiBlueprints;
 
 Info get info {
-  assert(_info != null, "$_TAG no Ensure Initialized");
-  return _info;
+  return Info.instance;
 }
 
-bool _enableLog = false;
+bool _enableLog;
 
 ///还原为设备原始实际值,使用系统像素密度
 double restore2DeviceValue(double dpValue) {
@@ -47,18 +51,23 @@ Size restore2DeviceSize(Size dpSize) {
   return dpSize * info.restoreRatio;
 }
 
-double _adapterDevicePixelRatio;
 // ignore: non_constant_identifier_names
 TransitionBuilder FxTransitionBuilder({TransitionBuilder builder}) {
   return (context, child) {
-    assert(_info != null, "$_TAG no Ensure Initialized,you need runFxApp");
     var old = MediaQuery.of(context);
+    double actualPixelRatio =
+        ui.window.physicalSize.width / _uiBlueprints.width;
+    Info.init(
+        actualPixelRatio: actualPixelRatio,
+        uiBlueprints: _uiBlueprints,
+        enableLog: _enableLog);
+    print("$_TAG $info");
+    assert(info != null, "$_TAG no Ensure Initialized,you need runFxApp");
     if (builder == null) builder = (__, _) => _;
     return TransitionBuilderWidget(
         builder: builder,
         didChangeMetricsCallBack: () {
-          _adapterDevicePixelRatio = null;
-          _info.onScreenMetricsChange(old);
+          info.onScreenMetricsChange(old);
         },
         child: MediaQuery(
           data: old.copyWith(
@@ -74,29 +83,24 @@ TransitionBuilder FxTransitionBuilder({TransitionBuilder builder}) {
   };
 }
 
+// final bool _isRelease = const bool.fromEnvironment("dart.vm.product");
+
 class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
   final ValueChanged<Info> onEnsureInitialized;
-  final BlueprintsRectangle uiBlueprints;
 
-  _FxWidgetsFlutterBinding(this.uiBlueprints, this.onEnsureInitialized);
+  _FxWidgetsFlutterBinding(this.onEnsureInitialized);
 
   static WidgetsFlutterBinding ensureInitialized(
-      BlueprintsRectangle uiBlueprints,
-      ValueChanged<Info> onEnsureInitialized,
-      bool enableLog) {
-    assert(uiBlueprints != null &&
-        uiBlueprints.width != null &&
-        uiBlueprints.width > 0);
-    _enableLog = enableLog;
+      ValueChanged<Info> onEnsureInitialized, bool enableLog) {
     if (WidgetsBinding.instance == null)
-      _FxWidgetsFlutterBinding(uiBlueprints, onEnsureInitialized);
-    double actualPixelRatio = ui.window.physicalSize.width / uiBlueprints.width;
-    _info = Info(
-        actualPixelRatio: actualPixelRatio,
-        uiBlueprints: uiBlueprints,
-        enableLog: enableLog);
-    print("$_TAG $_info");
-    if (onEnsureInitialized != null) onEnsureInitialized(_info);
+      _FxWidgetsFlutterBinding(onEnsureInitialized);
+    // if(!_isRelease){
+    //   Info.init(
+    //       actualPixelRatio: ui.window.physicalSize.width / _uiBlueprints.width,
+    //       uiBlueprints: _uiBlueprints,
+    //       enableLog: _enableLog);
+    // }
+    if (onEnsureInitialized != null) onEnsureInitialized(null);
     return WidgetsBinding.instance;
   }
 
@@ -176,13 +180,12 @@ class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
   }
 
   double get adapterDevicePixelRatio {
-    if (_adapterDevicePixelRatio == null) {
-      var deviceShortWidth =
-          ui.window.physicalSize.width <= ui.window.physicalSize.height
-              ? ui.window.physicalSize.width
-              : ui.window.physicalSize.height;
-      _adapterDevicePixelRatio = deviceShortWidth / uiBlueprints.width;
-    }
+    double _adapterDevicePixelRatio;
+    var deviceShortWidth =
+        ui.window.physicalSize.width <= ui.window.physicalSize.height
+            ? ui.window.physicalSize.width
+            : ui.window.physicalSize.height;
+    _adapterDevicePixelRatio = deviceShortWidth / _uiBlueprints.width;
     return _adapterDevicePixelRatio;
   }
 }
@@ -200,11 +203,11 @@ class _RoorRenderObjectWidget extends SingleChildRenderObjectWidget {
         "\n  builder: FxTransitionBuilder(builder: null),"
         "\n  ......"
         "\n);");
-    return _RenderInner();
+    return RenderPadding(padding: EdgeInsets.all(0));
   }
 
   bool _checkApp(Widget child, BuildContext context) {
-    // if(_enableLog) return true;
+    if (_enableLog) return true;
     MaterialApp app = _findMaterialOrCupertino<MaterialApp>(child, context);
     if (app != null) return app.builder != null;
 
@@ -242,8 +245,4 @@ class _RoorRenderObjectWidget extends SingleChildRenderObjectWidget {
       return null;
     }
   }
-}
-
-class _RenderInner extends RenderPadding {
-  _RenderInner() : super(padding: EdgeInsets.all(0));
 }

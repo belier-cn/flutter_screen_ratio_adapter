@@ -9,7 +9,7 @@ var uiSize = BlueprintsRectangle(414, 878);
 //void main() => runApp(MyApp());
 void main() {
   return runFxApp(MyApp(),
-      uiBlueprints: uiSize, onEnsureInitialized: (info) {}, enableLog: true);
+      uiBlueprints: uiSize, onEnsureInitialized: (info) {}, enableLog: !true);
 }
 
 class MyApp extends StatelessWidget {
