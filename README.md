@@ -1,8 +1,7 @@
 # screen_ratio_adapter
 
-A new Flutter package for screen atio adapter，Low invasion cost.Based wide adaptation,height Scroll or leave blank.It's not a utility class.
-
-一个Flutter package ,屏幕适配器，入侵成本极低。基于宽度方向适应，高度滚动或留空。并不是一个screen_util。再也不为适配屏幕重复搬砖。
+A new Flutter package.Based on screen rectangle with wide orientation adaptation, height scrolling or leave blank. Looks just like the design. No more repetitive moving of bricks for adapting screens.
+长得就像设计稿一样。再也不为适配屏幕重复搬砖。
 
 设计稿如同模特上挂着的衣服，但是强行穿在不同设备上，就成了买家秀，要么左右不对称，甚至撑破。
 
@@ -91,6 +90,15 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+————————————————————————
+  Container(
+  child: Text("W= 415"),
+  width: 415.w
+  height: 80.h)；//❌
+ Container(
+  child: Text("W= 415"),
+  width: 415
+  height: 80)；//✅
 
 ```
 

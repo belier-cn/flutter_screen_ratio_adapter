@@ -1,8 +1,21 @@
 import 'dart:developer';
 
-final bool _isRelease = const bool.fromEnvironment("dart.vm.product");
+bool _isRelease;
+
+class _BuildConfig {
+  static bool get isRelease {
+    if (_isRelease == null) {
+      _isRelease = true;
+      assert(() {
+        _isRelease = false;
+        return true;
+      }());
+    }
+    return _isRelease;
+  }
+}
 
 void print(Object object) {
-  if (_isRelease) return;
+  if (_BuildConfig.isRelease) return;
   log(object);
 }
