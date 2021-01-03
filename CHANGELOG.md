@@ -5,5 +5,6 @@
 ## [0.9.0] - TODO: 竖屏状态无干扰.
 ## [1.0.0] - TODO: To perform well.
 ## [1.0.1] - TODO: release bug fix.
+## [1.0.2] - TODO: 代码自检升级.
 
 * TODO: Describe initial release.
