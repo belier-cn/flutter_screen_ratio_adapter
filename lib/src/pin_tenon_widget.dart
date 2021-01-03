@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:screen_ratio_adapter/screen_ratio_adapter.dart';
 
-final bool _isRelease = const bool.fromEnvironment("dart.vm.product");
-
 class PinTenonWidget extends StatefulWidget {
   const PinTenonWidget();
 
@@ -35,12 +33,14 @@ class _PinTenonWidgetState extends State<PinTenonWidget>
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    if (info.deltaLength <= 0) return SizedBox.fromSize(size: Size.zero);
-    if (_isRelease)
-      return SizedBox(height: info.deltaLength, width: double.infinity);
+    if (Info.instance.deltaLength <= 0)
+      return SizedBox.fromSize(size: Size.zero);
+    if (Info.isRelease)
+      return SizedBox(
+          height: Info.instance.deltaLength, width: double.infinity);
     return Container(
         color: Colors.deepOrangeAccent,
-        height: info.deltaLength,
+        height: Info.instance.deltaLength,
         width: double.infinity,
         alignment: Alignment.center,
         child: Text('我是多余的'));

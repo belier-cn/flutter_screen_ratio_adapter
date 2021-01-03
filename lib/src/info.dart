@@ -127,4 +127,17 @@ class Info {
     }
     return 'Info{actualPixelRatio: $actualPixelRatio, uiBlueprints: $uiBlueprints, deltaHeight: $deltaLength, _deltaPadding: $_deltaPadding, _bodyMaxLength: $_bodyMaxLength}';
   }
+
+  static bool get isRelease {
+    if (_isRelease == null) {
+      _isRelease = true;
+      assert(() {
+        _isRelease = false;
+        return true;
+      }());
+    }
+    return _isRelease;
+  }
 }
+
+bool _isRelease;

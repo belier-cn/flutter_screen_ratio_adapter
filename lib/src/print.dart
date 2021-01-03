@@ -1,21 +1,7 @@
 import 'dart:developer';
-
-bool _isRelease;
-
-class _BuildConfig {
-  static bool get isRelease {
-    if (_isRelease == null) {
-      _isRelease = true;
-      assert(() {
-        _isRelease = false;
-        return true;
-      }());
-    }
-    return _isRelease;
-  }
-}
+import 'package:screen_ratio_adapter/screen_ratio_adapter.dart';
 
 void print(Object object) {
-  if (_BuildConfig.isRelease) return;
+  if (Info.isRelease) return;
   log(object);
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -16,7 +17,7 @@ const _TAG = "【_Fx】";
 
 void runFxApp(Widget app,
     {@required BlueprintsRectangle uiBlueprints,
-    ValueChanged<Info> onEnsureInitialized,
+    VoidCallback onEnsureInitialized,
     bool enableLog = false}) {
   assert(uiBlueprints != null &&
       uiBlueprints.width != null &&
@@ -32,42 +33,41 @@ void runFxApp(Widget app,
 // Info _info;
 BlueprintsRectangle _uiBlueprints;
 
-Info get info {
-  return Info.instance;
-}
-
 bool _enableLog;
 
 ///还原为设备原始实际值,使用系统像素密度
 double restore2DeviceValue(double dpValue) {
-  return dpValue * info.restoreRatio;
+  return dpValue * Info.instance.restoreRatio;
 }
 
 EdgeInsets restore2DeviceEdgeInsets(EdgeInsets dpEdgeInsets) {
-  return dpEdgeInsets * info.restoreRatio;
+  return dpEdgeInsets * Info.instance.restoreRatio;
 }
 
 Size restore2DeviceSize(Size dpSize) {
-  return dpSize * info.restoreRatio;
+  return dpSize * Info.instance.restoreRatio;
 }
 
 // ignore: non_constant_identifier_names
 TransitionBuilder FxTransitionBuilder({TransitionBuilder builder}) {
   return (context, child) {
     var old = MediaQuery.of(context);
+    var deviceShortWidth =
+    ui.window.physicalSize.width <= ui.window.physicalSize.height
+        ? ui.window.physicalSize.width
+        : ui.window.physicalSize.height;
     double actualPixelRatio =
-        ui.window.physicalSize.width / _uiBlueprints.width;
+        deviceShortWidth / _uiBlueprints.width;
     Info.init(
         actualPixelRatio: actualPixelRatio,
         uiBlueprints: _uiBlueprints,
         enableLog: _enableLog);
-    print("$_TAG $info");
-    assert(info != null, "$_TAG no Ensure Initialized,you need runFxApp");
     if (builder == null) builder = (__, _) => _;
     return TransitionBuilderWidget(
         builder: builder,
         didChangeMetricsCallBack: () {
-          info.onScreenMetricsChange(old);
+          Info.instance.onScreenMetricsChange(old);
+          if (_enableLog) print("$_TAG Info=${Info.instance}");
         },
         child: MediaQuery(
           data: old.copyWith(
@@ -86,21 +86,15 @@ TransitionBuilder FxTransitionBuilder({TransitionBuilder builder}) {
 // final bool _isRelease = const bool.fromEnvironment("dart.vm.product");
 
 class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
-  final ValueChanged<Info> onEnsureInitialized;
+  final VoidCallback onEnsureInitialized;
 
   _FxWidgetsFlutterBinding(this.onEnsureInitialized);
 
   static WidgetsFlutterBinding ensureInitialized(
-      ValueChanged<Info> onEnsureInitialized, bool enableLog) {
+      VoidCallback onEnsureInitialized, bool enableLog) {
     if (WidgetsBinding.instance == null)
       _FxWidgetsFlutterBinding(onEnsureInitialized);
-    // if(!_isRelease){
-    //   Info.init(
-    //       actualPixelRatio: ui.window.physicalSize.width / _uiBlueprints.width,
-    //       uiBlueprints: _uiBlueprints,
-    //       enableLog: _enableLog);
-    // }
-    if (onEnsureInitialized != null) onEnsureInitialized(null);
+    if (onEnsureInitialized != null) onEnsureInitialized();
     return WidgetsBinding.instance;
   }
 
@@ -174,12 +168,14 @@ class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
     } else if (event.down) {
       result = _hitTests[event.pointer];
     } else {
+      print("@We currently ignore add, remove, and hover move events.");
       return; // We currently ignore add, remove, and hover move events.
     }
     if (result != null) dispatchEvent(event, result);
   }
 
   double get adapterDevicePixelRatio {
+    if (Info.instance != null) return Info.instance.actualPixelRatio;
     double _adapterDevicePixelRatio;
     var deviceShortWidth =
         ui.window.physicalSize.width <= ui.window.physicalSize.height
@@ -195,54 +191,24 @@ class _RoorRenderObjectWidget extends SingleChildRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    assert(
-        _checkApp(super.child, context),
-        "\nError:'FxTransitionBuilder' is not configured"
-        "\nMaterialApp("
-        "\n  ......"
-        "\n  builder: FxTransitionBuilder(builder: null),"
-        "\n  ......"
-        "\n);");
+    _assertOnFuture(() => Info.instance == null,
+        errorMsg: "\nError:'FxTransitionBuilder' is not configured"
+            "\nMaterialApp("
+            "\n  ......"
+            "\n  builder: FxTransitionBuilder(builder: null),"
+            "\n  ......"
+            "\n);");
     return RenderPadding(padding: EdgeInsets.all(0));
   }
 
-  bool _checkApp(Widget child, BuildContext context) {
-    if (_enableLog) return true;
-    MaterialApp app = _findMaterialOrCupertino<MaterialApp>(child, context);
-    if (app != null) return app.builder != null;
-
-    CupertinoApp cApp = _findMaterialOrCupertino<CupertinoApp>(child, context);
-    if (cApp != null) return cApp.builder != null;
-    assert(true, "MaterialApp or CupertinoApp not find🙃");
-    return false;
-  }
-
-  Widget _findMaterialOrCupertino<T>(Widget widget, BuildContext context) {
-    if (widget is StatelessWidget) {
-      // ignore: invalid_use_of_protected_member
-      Widget child = widget.build(context);
-      if (child is T) {
-        return child;
-      } else {
-        return _findMaterialOrCupertino<T>(child, context);
-      }
-    } else if (widget is StatefulBuilder) {
-      // ignore: invalid_use_of_protected_member
-      Widget child = widget.createState().build(context);
-      if (child is T) {
-        return child;
-      } else {
-        return _findMaterialOrCupertino<T>(child, context);
-      }
-    } else if (widget is SingleChildRenderObjectWidget) {
-      Widget child = widget.child;
-      if (child is T) {
-        return child;
-      } else {
-        return _findMaterialOrCupertino<T>(child, context);
-      }
-    } else {
-      return null;
-    }
+  void _assertOnFuture(ValueGetter<bool> conditions,
+      {String errorMsg, int time = 1000}) {
+    if (Info.isRelease) return;
+    Future.delayed(Duration(milliseconds: time), () {
+      if (conditions.call()) throw FormatException(errorMsg ?? "");
+    });
+    Future.delayed(Duration(milliseconds: (time * 1.5).toInt()), () {
+      if (conditions.call()) exit(0);
+    });
   }
 }

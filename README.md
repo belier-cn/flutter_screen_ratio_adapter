@@ -51,6 +51,14 @@ A new Flutter package.Based on screen rectangle with wide orientation adaptation
 
 [已上传**github**    ️❤️❤️加星😘😘](https://github.com/qcks/flutter_screen_ratio_adapter)
 
+### 测试release模式下效果
+
+```
+Additional arguments:--release
+```
+
+
+
 ### 使用方式
 
 ```yaml
@@ -69,8 +77,7 @@ dependencies:
 ```dart
 import 'package:screen_ratio_adapter/screen_ratio_adapter.dart';
 ///设计稿尺寸，单位应是pt或dp
-Size uiSize = Size(414, 896);
-
+var uiSize = BlueprintsRectangle(414, 896);
 //void main() => runApp(MyApp());
 void main() {
   return runFxApp(MyApp(), uiSize: uiSize, onEnsureInitialized: () {
@@ -82,11 +89,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
       home: MyHomePage(),
-      builder: FxTransitionBuilder(builder: null),
+      builder: FxTransitionBuilder(builder: null),//勿忘
     );
   }
 }

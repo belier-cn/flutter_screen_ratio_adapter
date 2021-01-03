@@ -9,7 +9,7 @@ var uiSize = BlueprintsRectangle(414, 878);
 //void main() => runApp(MyApp());
 void main() {
   return runFxApp(MyApp(),
-      uiBlueprints: uiSize, onEnsureInitialized: (info) {}, enableLog: !true);
+      uiBlueprints: uiSize, onEnsureInitialized: () {}, enableLog: true);
 }
 
 class MyApp extends StatelessWidget {
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: '设计尺寸${uiSize.toString()}'),
-      builder: FxTransitionBuilder(builder: null),
+      // builder: FxTransitionBuilder(builder: null),
     );
   }
 }
@@ -46,7 +46,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-//    ScreenUtil.init(context, width: 750, height: 1334, allowFontScaling: true);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -68,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(
-                '设计尺寸 414x896 ${info.deltaLength}',
+                '设计尺寸 414x896 ',
                 style: TextStyle(fontSize: 20),
               ),
               Text(
@@ -206,17 +205,18 @@ class NextPage extends StatelessWidget {
       backgroundColor: Colors.green,
       body: Container(
 //        margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-        height: info.actualDpSize.height,
+        height: Info.instance.actualDpSize.height,
         color: Colors.red,
         child: Column(
           children: <Widget>[
             Container(
-              height: info.deltaLength.abs(),
+              height: Info.instance.deltaLength.abs(),
               width: double.infinity,
               color: Colors.deepPurpleAccent,
-              child: Text("deltaHeight=${info.deltaLength}"),
+              child: Text("deltaHeight=${Info.instance.deltaLength}"),
             ),
-            Text("info.actualDpSize.height=${info.actualDpSize}"),
+            Text(
+                "Info.instance.actualDpSize.height=${Info.instance.actualDpSize}"),
             Text(
               '设计尺寸 414x896',
               style: TextStyle(fontSize: 20),
@@ -348,9 +348,9 @@ class NextPage2 extends StatelessWidget {
           Container(
               color: Colors.deepPurpleAccent,
               width: double.infinity,
-//              height: info.bodyMaxLength-kToolbarHeight,
-              height: info.bodyMaxLength,
-              child: Text("body${info.bodyMaxLength}")),
+//              height: Info.instance.bodyMaxLength-kToolbarHeight,
+              height: Info.instance.bodyMaxLength,
+              child: Text("body${Info.instance.bodyMaxLength}")),
         ],
       ),
     );
@@ -368,7 +368,7 @@ class NextPage3 extends StatelessWidget {
         children: [
           Container(
             width: double.infinity,
-            height: info.uiBlueprints.length,
+            height: Info.instance.uiBlueprints.length,
             color: Colors.red,
             child: Text("PinTenonWidget测试"),
           ),
@@ -394,13 +394,32 @@ class NextPage4 extends StatelessWidget {
           Container(
             width: double.infinity,
 //            margin: EdgeInsets.only(top: MediaQuery.of(context).padding.vertical),
-            height: info.bodyMaxLength - kToolbarHeight,
+            height: Info.instance.bodyMaxLength - kToolbarHeight,
             color: Colors.red,
-            child: Text(
+            child: Text("${_getText()}"
                 "PinTenonWidget测试 ${MediaQuery.of(context).padding.vertical}"),
           ),
         ],
       ),
     );
+  }
+
+  String _getText() {
+    StringBuffer sb = new StringBuffer();
+    sb.write("int: ${getT<int>()} ${1.runtimeType.toString()} \n");
+    sb.write("String: ${getT<String>()} ${"".runtimeType.toString()} \n");
+    sb.write(
+        "dynamic: ${getT<dynamic>()} ${dynamic.runtimeType.toString()} \n");
+    sb.write("List<String>: ${getT<List<String>>()} ${[
+      ""
+    ].runtimeType.toString()} \n");
+    sb.write(
+        "List<String>: ${getT<List<String>>()} ${List<String>().runtimeType.toString()} \n");
+    sb.write("bool: ${getT<bool>()} ${true.runtimeType.toString()} \n");
+    return "${sb.toString()}";
+  }
+
+  getT<T>() {
+    return T.runtimeType.toString();
   }
 }
