@@ -90,7 +90,7 @@ class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
 
   _FxWidgetsFlutterBinding(this.onEnsureInitialized);
 
-  static WidgetsFlutterBinding ensureInitialized(
+  static WidgetsBinding ensureInitialized(
       VoidCallback onEnsureInitialized, bool enableLog) {
     if (WidgetsBinding.instance == null)
       _FxWidgetsFlutterBinding(onEnsureInitialized);
