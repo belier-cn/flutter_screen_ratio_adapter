@@ -3,19 +3,19 @@ import 'package:flutter/widgets.dart';
 class TransitionBuilderWidget extends StatefulWidget {
   final TransitionBuilder builder;
   final Widget child;
-  final VoidCallback didChangeMetricsCallBack;
+  final VoidCallback? didChangeMetricsCallBack;
 
   /// add didChangeMetricsCallBack
   const TransitionBuilderWidget(
-      {Key key,
-      @required this.builder,
-      this.child,
+      {Key? key,
+      required this.builder,
+      required this.child,
       this.didChangeMetricsCallBack})
       : super(key: key);
 
   @override
   _TransitionBuilderWidgetState createState() {
-    if (didChangeMetricsCallBack != null) didChangeMetricsCallBack();
+    didChangeMetricsCallBack?.call();
     return _TransitionBuilderWidgetState();
   }
 }
@@ -25,21 +25,20 @@ class _TransitionBuilderWidgetState extends State<TransitionBuilderWidget>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   ///应用尺寸改变时回调，例如旋转
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
-    if (widget.didChangeMetricsCallBack != null)
-      widget.didChangeMetricsCallBack();
+    widget.didChangeMetricsCallBack?.call();
   }
 
   @override
   void dispose() {
     super.dispose();
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
   }
 
   @override

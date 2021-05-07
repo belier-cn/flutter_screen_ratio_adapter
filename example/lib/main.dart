@@ -22,14 +22,14 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: '设计尺寸${uiSize.toString()}'),
-      // builder: FxTransitionBuilder(builder: null),
+      builder: FxTransitionBuilder(builder: null),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
+  MyHomePage({Key? key, this.title}) : super(key: key);
+  final String? title;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title??""),
         actions: <Widget>[
           GestureDetector(
             onTap: () {
@@ -193,7 +193,6 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class NextPage extends StatelessWidget {
-  NextPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -318,6 +317,7 @@ class NextPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         tooltip: 'Increment',
+        onPressed: () { },
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
@@ -325,7 +325,6 @@ class NextPage extends StatelessWidget {
 }
 
 class NextPage2 extends StatelessWidget {
-  NextPage2({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -348,7 +347,7 @@ class NextPage2 extends StatelessWidget {
           Container(
               color: Colors.deepPurpleAccent,
               width: double.infinity,
-//              height: Info.instance.bodyMaxLength-kToolbarHeight,
+             // height: Info.instance.bodyMaxLength-kToolbarHeight,
               height: Info.instance.bodyMaxLength,
               child: Text("body${Info.instance.bodyMaxLength}")),
         ],
@@ -358,7 +357,6 @@ class NextPage2 extends StatelessWidget {
 }
 
 class NextPage3 extends StatelessWidget {
-  NextPage3({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -380,7 +378,6 @@ class NextPage3 extends StatelessWidget {
 }
 
 class NextPage4 extends StatelessWidget {
-  NextPage4({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -414,7 +411,7 @@ class NextPage4 extends StatelessWidget {
       ""
     ].runtimeType.toString()} \n");
     sb.write(
-        "List<String>: ${getT<List<String>>()} ${List<String>().runtimeType.toString()} \n");
+        "List<String>: ${getT<List<String>>()} ${<String>[].runtimeType.toString()} \n");
     sb.write("bool: ${getT<bool>()} ${true.runtimeType.toString()} \n");
     return "${sb.toString()}";
   }

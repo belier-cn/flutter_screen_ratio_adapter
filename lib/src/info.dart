@@ -8,10 +8,13 @@ import 'ui_blueprints_rectangle.dart';
 const _TAG = "【_Fx】";
 
 class Info {
-  static Info _instance;
+  static bool initialed = false;
+
+  static Info? _instance;
 
   static Info get instance {
-    return _instance;
+    assert(initialed, "未初始化完成");
+    return _instance!;
   }
 
   ///适配之后，每个逻辑像素对应的设备像素数
@@ -23,28 +26,29 @@ class Info {
   final bool enableLog;
 
   ///长度差值
-  double deltaLength;
+  double deltaLength = -1;
 
-  EdgeInsets _deltaPadding;
+  EdgeInsets _deltaPadding = EdgeInsets.zero;
 
-  double _bodyMaxLength;
+  double _bodyMaxLength = -1;
 
   Info._(
-      {@required this.actualPixelRatio,
-      @required this.uiBlueprints,
-      this.enableLog = true});
+      {required this.actualPixelRatio,
+      required this.uiBlueprints,
+      required this.enableLog});
 
   factory Info.init(
-      {@required double actualPixelRatio,
-      @required BlueprintsRectangle uiBlueprints,
-      bool enableLog = true}) {
+      {required double actualPixelRatio,
+      required BlueprintsRectangle uiBlueprints,
+      bool enableLog = false}) {
     if (_instance == null) {
       _instance = Info._(
           actualPixelRatio: actualPixelRatio,
           uiBlueprints: uiBlueprints,
           enableLog: enableLog);
     }
-    return _instance;
+    initialed = true;
+    return _instance!;
   }
 
   ///密度无关像素，每个逻辑像素对应的设备像素数。就像 dp 或者 pt
@@ -136,8 +140,8 @@ class Info {
         return true;
       }());
     }
-    return _isRelease;
+    return _isRelease!;
   }
 }
 
-bool _isRelease;
+bool? _isRelease;
