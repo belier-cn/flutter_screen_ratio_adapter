@@ -6,5 +6,6 @@
 ## [1.0.0] - TODO: To perform well.
 ## [1.0.1] - TODO: release bug fix.
 ## [1.0.2] - TODO: 代码自检升级.
+## [2.0.0] - TODO: 空安全，Stable release for null safety.
 
 * TODO: Describe initial release.
