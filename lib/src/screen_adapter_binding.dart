@@ -60,6 +60,7 @@ TransitionBuilder FxTransitionBuilder({TransitionBuilder? builder}) {
         actualPixelRatio: actualPixelRatio,
         uiBlueprints: _uiBlueprints,
         enableLog: _enableLog);
+    // Info.instance.onScreenMetricsChange(old);
     return TransitionBuilderWidget(
         builder: builder ?? (__, _) => _!,
         didChangeMetricsCallBack: () {

@@ -3,19 +3,18 @@ import 'package:flutter/widgets.dart';
 class TransitionBuilderWidget extends StatefulWidget {
   final TransitionBuilder builder;
   final Widget child;
-  final VoidCallback? didChangeMetricsCallBack;
+  final VoidCallback didChangeMetricsCallBack;
 
   /// add didChangeMetricsCallBack
   const TransitionBuilderWidget(
       {Key? key,
       required this.builder,
       required this.child,
-      this.didChangeMetricsCallBack})
+      required this.didChangeMetricsCallBack})
       : super(key: key);
 
   @override
   _TransitionBuilderWidgetState createState() {
-    didChangeMetricsCallBack?.call();
     return _TransitionBuilderWidgetState();
   }
 }
@@ -32,7 +31,7 @@ class _TransitionBuilderWidgetState extends State<TransitionBuilderWidget>
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
-    widget.didChangeMetricsCallBack?.call();
+    widget.didChangeMetricsCallBack.call();
   }
 
   @override

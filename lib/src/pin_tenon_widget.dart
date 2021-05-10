@@ -21,7 +21,7 @@ class _PinTenonWidgetState extends State<PinTenonWidget>
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
-    setState(() {});
+    // setState(() {});
   }
 
   @override
@@ -35,14 +35,19 @@ class _PinTenonWidgetState extends State<PinTenonWidget>
     // TODO: implement build
     if (Info.instance.deltaLength <= 0)
       return SizedBox.fromSize(size: Size.zero);
-    if (Info.isRelease)
-      return SizedBox(
-          height: Info.instance.deltaLength, width: double.infinity);
-    return Container(
-        color: Colors.deepOrangeAccent,
+    Widget result = const SizedBox();
+    assert(() {
+      result = Container(
+          color: Colors.deepOrangeAccent,
+          height: Info.instance.deltaLength,
+          width: double.infinity,
+          alignment: Alignment.center,
+          child: Text('我是多余的'));
+      return true;
+    }());
+    return SizedBox(
         height: Info.instance.deltaLength,
         width: double.infinity,
-        alignment: Alignment.center,
-        child: Text('我是多余的'));
+        child: result);
   }
 }

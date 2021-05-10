@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title??""),
+        title: Text(widget.title ?? ""),
         actions: <Widget>[
           GestureDetector(
             onTap: () {
@@ -193,7 +193,6 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class NextPage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     print("@@NextPageMediaQuery ${MediaQuery.of(context)}");
@@ -317,7 +316,7 @@ class NextPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         tooltip: 'Increment',
-        onPressed: () { },
+        onPressed: () {},
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
@@ -325,7 +324,6 @@ class NextPage extends StatelessWidget {
 }
 
 class NextPage2 extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -347,9 +345,10 @@ class NextPage2 extends StatelessWidget {
           Container(
               color: Colors.deepPurpleAccent,
               width: double.infinity,
-             // height: Info.instance.bodyMaxLength-kToolbarHeight,
+              // height: Info.instance.bodyMaxLength-kToolbarHeight,
               height: Info.instance.bodyMaxLength,
-              child: Text("body${Info.instance.bodyMaxLength}")),
+              child: Text(
+                  "body${Info.instance.bodyMaxLength} kToolbarHeight=$kToolbarHeight MediaQuery.of(context).padding.top=${MediaQuery.of(context).padding.top}")),
         ],
       ),
     );
@@ -357,7 +356,6 @@ class NextPage2 extends StatelessWidget {
 }
 
 class NextPage3 extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -378,7 +376,6 @@ class NextPage3 extends StatelessWidget {
 }
 
 class NextPage4 extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
