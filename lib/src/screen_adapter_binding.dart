@@ -16,14 +16,13 @@ import 'transition_builder_widget.dart';
 
 const _TAG = "【_Fx】";
 
+@deprecated
 void runFxApp(Widget app,
     {required BlueprintsRectangle uiBlueprints,
     VoidCallback? onEnsureInitialized,
     bool enableLog = false}) {
-  assert(uiBlueprints.width > 0);
-  _enableLog = enableLog;
-  _uiBlueprints = uiBlueprints;
-  _FxWidgetsFlutterBinding.ensureInitialized(onEnsureInitialized, enableLog)
+  FxWidgetsFlutterBinding.ensureInitialized(
+      uiBlueprints: uiBlueprints, enableLog: enableLog)
     // ignore: invalid_use_of_protected_member
     ..scheduleAttachRootWidget(app)
     ..scheduleWarmUpFrame();
@@ -55,21 +54,27 @@ TransitionBuilder FxTransitionBuilder({TransitionBuilder? builder}) {
         ui.window.physicalSize.width <= ui.window.physicalSize.height
             ? ui.window.physicalSize.width
             : ui.window.physicalSize.height;
+    if (deviceShortWidth == 0)
+      deviceShortWidth = old.size.width < old.size.height
+          ? old.size.width * old.devicePixelRatio
+          : old.size.height * old.devicePixelRatio;
     double actualPixelRatio = deviceShortWidth / _uiBlueprints.width;
     Info.init(
-        actualPixelRatio: actualPixelRatio,
-        uiBlueprints: _uiBlueprints,
-        enableLog: _enableLog);
-    // Info.instance.onScreenMetricsChange(old);
+            actualPixelRatio: actualPixelRatio,
+            uiBlueprints: _uiBlueprints,
+            enableLog: _enableLog)
+        .onScreenMetricsChange(old);
+    if (_enableLog) print("$_TAG Info=${Info.instance}");
     return TransitionBuilderWidget(
         builder: builder ?? (__, _) => _!,
         didChangeMetricsCallBack: () {
-          Info.instance.onScreenMetricsChange(old);
-          if (_enableLog) print("$_TAG Info=${Info.instance}");
+          // Info.instance.onScreenMetricsChange(old);
+          // if (_enableLog) print("$_TAG Info=${Info.instance}");
         },
         child: MediaQuery(
           data: old.copyWith(
             textScaleFactor: 1,
+            devicePixelRatio: actualPixelRatio,
             padding: restore2DeviceEdgeInsets(old.padding),
             viewPadding: restore2DeviceEdgeInsets(old.viewPadding),
             viewInsets: restore2DeviceEdgeInsets(old.viewInsets),
@@ -81,13 +86,17 @@ TransitionBuilder FxTransitionBuilder({TransitionBuilder? builder}) {
   };
 }
 
-class _FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
-  _FxWidgetsFlutterBinding();
-
+class FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
   static WidgetsBinding ensureInitialized(
-      VoidCallback? onEnsureInitialized, bool enableLog) {
-    if (WidgetsBinding.instance == null) _FxWidgetsFlutterBinding();
-    if (onEnsureInitialized != null) onEnsureInitialized();
+      {required BlueprintsRectangle uiBlueprints,
+      bool enableLog = false,
+      @deprecated VoidCallback? onEnsureInitialized}) {
+    assert(uiBlueprints.width > 0);
+    _enableLog = enableLog;
+    _uiBlueprints = uiBlueprints;
+    assert(WidgetsBinding.instance == null);
+    if (WidgetsBinding.instance == null) FxWidgetsFlutterBinding();
+    onEnsureInitialized?.call();
     return WidgetsBinding.instance!;
   }
 

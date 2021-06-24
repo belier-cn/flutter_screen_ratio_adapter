@@ -6,11 +6,16 @@ import 'package:screen_ratio_adapter/screen_ratio_adapter.dart';
 //var uiSize = BlueprintsRectangle(721, 628);
 var uiSize = BlueprintsRectangle(414, 878);
 
-//void main() => runApp(MyApp());
 void main() {
-  return runFxApp(MyApp(),
-      uiBlueprints: uiSize, onEnsureInitialized: () {}, enableLog: true);
+  // WidgetsFlutterBinding.ensureInitialized();
+  FxWidgetsFlutterBinding.ensureInitialized(
+      uiBlueprints: uiSize, enableLog: true);
+  runApp(MyApp());
 }
+// void main() {
+//   return runFxApp(MyApp(),
+//       uiBlueprints: uiSize, onEnsureInitialized: () {}, enableLog: true);
+// }
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -50,14 +55,13 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title ?? ""),
         actions: <Widget>[
-          GestureDetector(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return NextPage();
-              }));
-            },
-            child: Center(child: Text("NextPage")),
-          ),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return NextPage();
+                }));
+              },
+              child: Text("NextPage")),
         ],
       ),
       body: SingleChildScrollView(
@@ -324,29 +328,35 @@ class NextPage extends StatelessWidget {
 }
 
 class NextPage2 extends StatelessWidget {
+  Size size = Size.zero;
+
   @override
   Widget build(BuildContext context) {
+    size = MediaQuery.of(context).size;
     // TODO: implement build
-    print("build哈哈哈");
+    print("build哈哈哈size=$size");
     return Scaffold(
-//      appBar: AppBar(
-//        title: Text("哈哈哈"),
-//      ),
+      // appBar: AppBar(
+      //   title: Text("哈哈哈"),
+      // ),
       body: Column(
         children: [
-//          Container(
-//              color: Colors.green,
-//              width: double.infinity,
-//              height: MediaQuery.of(context).padding.top,),
           Container(
-              width: double.infinity,
-              height: MediaQuery.of(context).padding.top,
-              color: Colors.red),
+            color: Colors.green,
+            width: double.infinity,
+            height: MediaQuery.of(context).padding.top,
+          ),
+//           Container(
+//               width: double.infinity,
+//               height: MediaQuery.of(context).padding.top,
+//               color: Colors.red),
           Container(
               color: Colors.deepPurpleAccent,
               width: double.infinity,
-              // height: Info.instance.bodyMaxLength-kToolbarHeight,
               height: Info.instance.bodyMaxLength,
+              // height: Info.instance.uiBlueprints.length+Info.instance.deltaLength,
+              // height: double.infinity,
+              // height:size.height,
               child: Text(
                   "body${Info.instance.bodyMaxLength} kToolbarHeight=$kToolbarHeight MediaQuery.of(context).padding.top=${MediaQuery.of(context).padding.top}")),
         ],
