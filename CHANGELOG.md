@@ -8,5 +8,6 @@
 ## [1.0.2] - TODO: 代码自检升级.
 ## [2.0.0] - TODO: 空安全，Stable release for null safety.
 ## [2.0.1] - TODO: .
+## [3.0.0] - TODO: 初始化方法简化，修改全局MediaQueryData.size,更新readme.
 
 * TODO: Describe initial release.

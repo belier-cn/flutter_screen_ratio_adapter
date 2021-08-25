@@ -71,6 +71,9 @@ class _MyHomePageState extends State<MyHomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(
+                'MediaQuery.of(context).size=${MediaQuery.of(context).size}',
+              ),
+              Text(
                 '设计尺寸 414x896 ',
                 style: TextStyle(fontSize: 20),
               ),
@@ -315,6 +318,14 @@ class NextPage extends StatelessWidget {
               },
               child: Text("NextPage4"),
             ),
+            RaisedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return RepetitionLine();
+                }));
+              },
+              child: Text("RepetitionLine"),
+            ),
           ],
         ),
       ),
@@ -323,6 +334,46 @@ class NextPage extends StatelessWidget {
         onPressed: () {},
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class RepetitionLine extends StatelessWidget {
+  RepetitionLine({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    double value = 50.6;
+    return Scaffold(
+      body: Column(
+        children: [
+          SizedBox(
+            height: 300,
+            child: Scaffold(
+              appBar: AppBar(
+                  title: Text('复现线条间隙问题'),
+                  elevation: 0,
+                  backgroundColor: Color(0xFF007D5F)),
+              backgroundColor: Color(0xFF007D5F),
+              body: Container(color: Color(0xFF007D5F), height: 200),
+            ),
+          ),
+          SizedBox(height: 100),
+          Container(color: Colors.green, height: 50),
+          Container(color: Colors.green, height: 50),
+          Container(color: Colors.green, height: 50),
+          Container(color: Colors.green, height: value),
+          Container(color: Colors.green, height: value),
+          Container(color: Colors.green, height: value),
+          Row(
+            children: [
+              Container(color: Colors.green, height: 50, width: value),
+              Container(color: Colors.green, height: 50, width: value),
+              Container(color: Colors.green, height: 50, width: value),
+            ],
+          )
+        ],
+      ),
     );
   }
 }

@@ -80,8 +80,9 @@ import 'package:screen_ratio_adapter/screen_ratio_adapter.dart';
 var uiSize = BlueprintsRectangle(414, 896);
 //void main() => runApp(MyApp());
 void main() {
-  return runFxApp(MyApp(), uiSize: uiSize, onEnsureInitialized: () {
-  });
+  FxWidgetsFlutterBinding.ensureInitialized(
+      uiBlueprints: uiSize);
+  return runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

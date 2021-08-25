@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -16,19 +16,6 @@ import 'transition_builder_widget.dart';
 
 const _TAG = "【_Fx】";
 
-@deprecated
-void runFxApp(Widget app,
-    {required BlueprintsRectangle uiBlueprints,
-    VoidCallback? onEnsureInitialized,
-    bool enableLog = false}) {
-  FxWidgetsFlutterBinding.ensureInitialized(
-      uiBlueprints: uiBlueprints, enableLog: enableLog)
-    // ignore: invalid_use_of_protected_member
-    ..scheduleAttachRootWidget(app)
-    ..scheduleWarmUpFrame();
-}
-
-// Info _info;
 BlueprintsRectangle _uiBlueprints = const BlueprintsRectangle(0, 0);
 
 bool _enableLog = false;
@@ -48,6 +35,7 @@ Size restore2DeviceSize(Size dpSize) {
 
 // ignore: non_constant_identifier_names
 TransitionBuilder FxTransitionBuilder({TransitionBuilder? builder}) {
+  assert(WidgetsBinding.instance != null, "未初始化ui");
   return (context, child) {
     var old = MediaQuery.of(context);
     var deviceShortWidth =
@@ -74,6 +62,7 @@ TransitionBuilder FxTransitionBuilder({TransitionBuilder? builder}) {
         child: MediaQuery(
           data: old.copyWith(
             textScaleFactor: 1,
+            size: (old.size / actualPixelRatio) * old.devicePixelRatio,
             devicePixelRatio: actualPixelRatio,
             padding: restore2DeviceEdgeInsets(old.padding),
             viewPadding: restore2DeviceEdgeInsets(old.viewPadding),
@@ -88,15 +77,13 @@ TransitionBuilder FxTransitionBuilder({TransitionBuilder? builder}) {
 
 class FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
   static WidgetsBinding ensureInitialized(
-      {required BlueprintsRectangle uiBlueprints,
-      bool enableLog = false,
-      @deprecated VoidCallback? onEnsureInitialized}) {
+      {required BlueprintsRectangle uiBlueprints, bool enableLog = false}) {
     assert(uiBlueprints.width > 0);
     _enableLog = enableLog;
     _uiBlueprints = uiBlueprints;
     assert(WidgetsBinding.instance == null);
     if (WidgetsBinding.instance == null) FxWidgetsFlutterBinding();
-    onEnsureInitialized?.call();
+    // onEnsureInitialized?.call();
     return WidgetsBinding.instance!;
   }
 
@@ -273,7 +260,7 @@ class _RoorRenderObjectWidget extends SingleChildRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    _assertOnFuture(() => Info.instance == null,
+    _assertOnFuture(() => !Info.initialed,
         errorMsg: "\nError:'FxTransitionBuilder' is not configured"
             "\nMaterialApp("
             "\n  ......"
@@ -290,11 +277,12 @@ class _RoorRenderObjectWidget extends SingleChildRenderObjectWidget {
       if (conditions.call()) throw FormatException(errorMsg);
     });
     Future.delayed(Duration(milliseconds: (time * 1.5).toInt()), () {
-      if (conditions.call()) exit(0);
+      if (conditions.call()) SystemNavigator.pop();
     });
   }
 }
 
+///now  flutter --version 2.3.0-0.1.pre
 const Duration _defaultSamplingOffset = Duration(milliseconds: -38);
 const Duration _samplingInterval = Duration(microseconds: 16667);
 
