@@ -38,15 +38,12 @@ TransitionBuilder FxTransitionBuilder({TransitionBuilder? builder}) {
   assert(WidgetsBinding.instance != null, "未初始化ui");
   return (context, child) {
     var old = MediaQuery.of(context);
-    var deviceShortWidth =
-        ui.window.physicalSize.width <= ui.window.physicalSize.height
-            ? ui.window.physicalSize.width
-            : ui.window.physicalSize.height;
-    if (deviceShortWidth == 0)
-      deviceShortWidth = old.size.width < old.size.height
-          ? old.size.width * old.devicePixelRatio
-          : old.size.height * old.devicePixelRatio;
-    double actualPixelRatio = deviceShortWidth / _uiBlueprints.width;
+    double actualPixelRatio = ui.window.devicePixelRatio;
+    if (ui.window.physicalGeometry.width <
+        _uiBlueprints.width * actualPixelRatio) {
+      // 宽度小于设计稿的宽度就等比缩放
+      actualPixelRatio = ui.window.physicalSize.width / _uiBlueprints.width;
+    }
     Info.init(
             actualPixelRatio: actualPixelRatio,
             uiBlueprints: _uiBlueprints,
