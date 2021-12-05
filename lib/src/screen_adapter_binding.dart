@@ -242,13 +242,12 @@ class FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
 
   double get adapterDevicePixelRatio {
     if (Info.initialed) return Info.instance.actualPixelRatio;
-    double _adapterDevicePixelRatio;
-    var deviceShortWidth =
-        ui.window.physicalSize.width <= ui.window.physicalSize.height
-            ? ui.window.physicalSize.width
-            : ui.window.physicalSize.height;
-    _adapterDevicePixelRatio = deviceShortWidth / _uiBlueprints.width;
-    return _adapterDevicePixelRatio;
+    if (ui.window.physicalGeometry.width <
+        _uiBlueprints.width * ui.window.devicePixelRatio) {
+      // 宽度小于设计稿的宽度就等比缩放
+      return ui.window.physicalSize.width / _uiBlueprints.width;
+    }
+    return ui.window.devicePixelRatio;
   }
 }
 
