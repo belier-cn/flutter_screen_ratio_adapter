@@ -24,7 +24,7 @@ class _TransitionBuilderWidgetState extends State<TransitionBuilderWidget>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   ///应用尺寸改变时回调，例如旋转
@@ -37,7 +37,7 @@ class _TransitionBuilderWidgetState extends State<TransitionBuilderWidget>
   @override
   void dispose() {
     super.dispose();
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   @override
