@@ -35,7 +35,6 @@ Size restore2DeviceSize(Size dpSize) {
 
 // ignore: non_constant_identifier_names
 TransitionBuilder FxTransitionBuilder({TransitionBuilder? builder}) {
-  assert(WidgetsBinding.instance != null, "未初始化ui");
   return (context, child) {
     var old = MediaQuery.of(context);
     double actualPixelRatio = ui.window.devicePixelRatio;
@@ -78,10 +77,8 @@ class FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
     assert(uiBlueprints.width > 0);
     _enableLog = enableLog;
     _uiBlueprints = uiBlueprints;
-    assert(WidgetsBinding.instance == null);
-    if (WidgetsBinding.instance == null) FxWidgetsFlutterBinding();
     // onEnsureInitialized?.call();
-    return WidgetsBinding.instance!;
+    return WidgetsBinding.instance;
   }
 
   @protected
@@ -279,7 +276,6 @@ class _RoorRenderObjectWidget extends SingleChildRenderObjectWidget {
 }
 
 ///now  flutter --version 2.3.0-0.1.pre
-const Duration _defaultSamplingOffset = Duration(milliseconds: -38);
 const Duration _samplingInterval = Duration(microseconds: 16667);
 
 typedef _HandleSampleTimeChangedCallback = void Function();

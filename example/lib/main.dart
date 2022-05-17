@@ -184,7 +184,6 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               Text(
                 '$_counter',
-                style: Theme.of(context).textTheme.display1,
               ),
             ],
           ),
@@ -294,7 +293,7 @@ class NextPage extends StatelessWidget {
                 ),
               ],
             ),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return NextPage2();
@@ -302,7 +301,7 @@ class NextPage extends StatelessWidget {
               },
               child: Text("NextPage"),
             ),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return NextPage3();
@@ -310,7 +309,7 @@ class NextPage extends StatelessWidget {
               },
               child: Text("NextPage3"),
             ),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return NextPage4();
@@ -318,7 +317,7 @@ class NextPage extends StatelessWidget {
               },
               child: Text("NextPage4"),
             ),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return RepetitionLine();
