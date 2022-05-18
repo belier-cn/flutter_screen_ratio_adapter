@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/rendering.dart';
 import 'package:screen_ratio_adapter/src/ui_blueprints_rectangle.dart';
@@ -78,7 +77,7 @@ class FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
     _enableLog = enableLog;
     _uiBlueprints = uiBlueprints;
     // onEnsureInitialized?.call();
-    return WidgetsBinding.instance;
+    return FxWidgetsFlutterBinding();
   }
 
   @protected
@@ -232,7 +231,6 @@ class FxWidgetsFlutterBinding extends WidgetsFlutterBinding {
     if (hitTestResult != null ||
         event is PointerAddedEvent ||
         event is PointerRemovedEvent) {
-      assert(event.position != null);
       dispatchEvent(event, hitTestResult);
     }
   }

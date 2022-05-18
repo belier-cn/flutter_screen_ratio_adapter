@@ -378,11 +378,10 @@ class RepetitionLine extends StatelessWidget {
 }
 
 class NextPage2 extends StatelessWidget {
-  Size size = Size.zero;
 
   @override
   Widget build(BuildContext context) {
-    size = MediaQuery.of(context).size;
+    var size = MediaQuery.of(context).size;
     // TODO: implement build
     print("build哈哈哈size=$size");
     return Scaffold(
